@@ -5,6 +5,6 @@ protocol DeviceActionProtocol {
 	record DeviceActionAvro {
 		string sensor_id;
 		ActionTypeAvro type;
-		int value;
+		union{null, int} value = null;
 	}
 }
