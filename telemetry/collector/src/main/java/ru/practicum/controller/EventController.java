@@ -16,12 +16,12 @@ public class EventController {
     private final EventService eventService;
 
     @PostMapping("/hubs")
-    void collectHubEvent(@RequestBody HubEvent event) {
+    public void collectHubEvent(@RequestBody HubEvent event) {
         eventService.collectHubEvent(event);
     }
 
     @PostMapping("/sensors")
-    void collectSensorEvent(@RequestBody SensorEvent event) {
+    public void collectSensorEvent(@RequestBody SensorEvent event) {
         eventService.collectSensorEvent(event);
     }
 }
