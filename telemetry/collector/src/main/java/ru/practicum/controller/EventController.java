@@ -7,9 +7,9 @@ import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.server.service.GrpcService;
 import ru.practicum.service.EventService;
-import ru.yandex.practicum.grpc.telemetry.service.collector.CollectorControllerGrpc.CollectorControllerImplBase;
 import ru.yandex.practicum.grpc.telemetry.messages.hub.HubEventProto;
 import ru.yandex.practicum.grpc.telemetry.messages.sensor.SensorEventProto;
+import ru.yandex.practicum.grpc.telemetry.service.collector.CollectorControllerGrpc.CollectorControllerImplBase;
 
 @GrpcService
 @RequiredArgsConstructor
