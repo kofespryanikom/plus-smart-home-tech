@@ -82,25 +82,28 @@ public class SnapshotServiceImpl implements SnapshotService {
                     .setNanos(sensorsSnapshotAvro.getTimestamp().getNano())
                     .build();
 
-            ScenarioAction action = actions.stream()
+            List<ScenarioAction> scenarioActions = actions.stream()
                     .filter(a -> a.getScenario().getId().equals(scenario.getId()))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalStateException("No action found for scenario: " +
-                            scenario.getName()));
-
-            DeviceActionProto actionProto = DeviceActionProto.newBuilder()
-                    .setSensorId(action.getSensor().getId())
-                    .setType(ActionTypeProto.valueOf(action.getAction().getType()))
-                    .setValue(action.getAction().getValue())
-                    .build();
+                    .toList();
 
             if (isTriggered) {
-                hubActionProducer.sendAction(DeviceActionRequestProto.newBuilder()
-                                .setHubId(scenario.getHubId())
-                                .setScenarioName(scenario.getName())
-                                .setAction(actionProto)
-                                .setTimestamp(timestamp)
-                        .build());
+                for (ScenarioAction action : scenarioActions) {
+
+                    DeviceActionProto actionProto = DeviceActionProto.newBuilder()
+                            .setSensorId(action.getSensor().getId())
+                            .setType(ActionTypeProto.valueOf(action.getAction().getType()))
+                            .setValue(action.getAction().getValue())
+                            .build();
+
+                    hubActionProducer.sendAction(
+                            DeviceActionRequestProto.newBuilder()
+                                    .setHubId(scenario.getHubId())
+                                    .setScenarioName(scenario.getName())
+                                    .setAction(actionProto)
+                                    .setTimestamp(timestamp)
+                                    .build()
+                    );
+                }
             }
         }
     }

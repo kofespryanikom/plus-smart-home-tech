@@ -9,7 +9,6 @@ import ru.yandex.practicum.kafka.telemetry.hub.scenario.DeviceActionAvro;
 import ru.yandex.practicum.kafka.telemetry.hub.scenario.ScenarioAddedEventAvro;
 import ru.yandex.practicum.kafka.telemetry.hub.scenario.ScenarioConditionAvro;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -65,9 +64,8 @@ public class ScenarioAddedHandler implements HubEventHandler {
                 case null -> conditionToSave.setValue(null);
                 case Integer i -> conditionToSave.setValue(i);
                 case Boolean b -> conditionToSave.setValue(b ? 1 : 0);
-                default ->
-                        throw new IllegalArgumentException("Unsupported value type: " +
-                                condition.getValue().getClass());
+                default -> throw new IllegalArgumentException("Unsupported value type: " +
+                        condition.getValue().getClass());
             }
 
             Condition conditionSaved = conditionRepository.save(conditionToSave);

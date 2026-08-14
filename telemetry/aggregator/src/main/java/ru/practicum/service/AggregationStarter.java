@@ -1,18 +1,15 @@
 package ru.practicum.service;
 
-import kafka.deserializer.SensorEventDeserializer;
-import kafka.serializer.GeneralAvroSerializer;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.specific.SpecificRecordBase;
-import org.apache.kafka.clients.consumer.*;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.WakeupException;
-import org.apache.kafka.common.serialization.VoidDeserializer;
-import org.apache.kafka.common.serialization.VoidSerializer;
 import org.springframework.stereotype.Component;
 import ru.practicum.config.KafkaConsumerConfig;
 import ru.practicum.config.KafkaProducerConfig;
@@ -20,7 +17,10 @@ import ru.yandex.practicum.kafka.telemetry.sensor.SensorEventAvro;
 import ru.yandex.practicum.kafka.telemetry.snapshot.SensorsSnapshotAvro;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Component

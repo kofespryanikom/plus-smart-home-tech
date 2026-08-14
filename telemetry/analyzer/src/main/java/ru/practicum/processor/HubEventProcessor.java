@@ -9,11 +9,8 @@ import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.WakeupException;
 import org.springframework.stereotype.Component;
 import ru.practicum.config.HubKafkaConfig;
-import ru.practicum.config.SnapshotKafkaConfig;
 import ru.practicum.service.hub.HubEventService;
-import ru.practicum.service.snapshot.SnapshotService;
 import ru.yandex.practicum.kafka.telemetry.hub.HubEventAvro;
-import ru.yandex.practicum.kafka.telemetry.snapshot.SensorsSnapshotAvro;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -65,6 +62,7 @@ public class HubEventProcessor implements Runnable {
             }
         }
     }
+
     private void manageOffsets(ConsumerRecord<Void, HubEventAvro> record,
                                int processedMessagesCount,
                                KafkaConsumer<Void, HubEventAvro> consumer) {

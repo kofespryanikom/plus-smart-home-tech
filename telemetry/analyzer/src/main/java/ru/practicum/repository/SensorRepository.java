@@ -10,6 +10,8 @@ import java.util.Set;
 
 public interface SensorRepository extends JpaRepository<Sensor, String> {
     boolean existsByIdInAndHubId(Collection<String> ids, String hubId);
+
     Optional<Sensor> findByIdAndHubId(String id, String hubId);
+
     List<Sensor> findByIdIn(Set<String> ids);
 }

@@ -1,6 +1,5 @@
 package ru.practicum.service.hub;
 
-import ru.yandex.practicum.grpc.telemetry.messages.hub.HubEventProto;
 import ru.yandex.practicum.kafka.telemetry.hub.HubEventAvro;
 
 public interface HubEventService {

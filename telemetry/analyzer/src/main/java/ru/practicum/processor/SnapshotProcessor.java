@@ -10,14 +10,12 @@ import org.apache.kafka.common.errors.WakeupException;
 import org.springframework.stereotype.Component;
 import ru.practicum.config.SnapshotKafkaConfig;
 import ru.practicum.service.snapshot.SnapshotService;
-import ru.yandex.practicum.kafka.telemetry.sensor.SensorEventAvro;
 import ru.yandex.practicum.kafka.telemetry.snapshot.SensorsSnapshotAvro;
 
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Slf4j
 @Component
@@ -63,6 +61,7 @@ public class SnapshotProcessor {
             }
         }
     }
+
     private void manageOffsets(ConsumerRecord<Void, SensorsSnapshotAvro> record,
                                int processedMessagesCount,
                                KafkaConsumer<Void, SensorsSnapshotAvro> consumer) {
