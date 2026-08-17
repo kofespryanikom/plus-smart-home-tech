@@ -1,40 +1,67 @@
 package ru.practicum.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.util.JsonFormat;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.mapper.EventMapper;
-import ru.practicum.model.hub.HubEvent;
-import ru.practicum.model.sensor.SensorEvent;
+import ru.practicum.service.handler.hub.HubEventHandler;
+import ru.practicum.service.handler.sensor.SensorEventHandler;
+import ru.yandex.practicum.grpc.telemetry.messages.hub.HubEventProto;
+import ru.yandex.practicum.grpc.telemetry.messages.sensor.SensorEventProto;
+
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
-    private final KafkaEventProducer producer;
-    private final ObjectMapper objectMapper;
-    private static final String HUBS_TOPIC = "telemetry.hubs.v1";
-    private static final String SENSORS_TOPIC = "telemetry.sensors.v1";
+    private final Map<SensorEventProto.PayloadCase, SensorEventHandler> sensorEventHandlers;
+    private final Map<HubEventProto.PayloadCase, HubEventHandler> hubEventHandlers;
 
-    @Override
-    public void collectHubEvent(HubEvent event) {
-        try {
-            log.info("json: {}", objectMapper.writeValueAsString(event));
-        } catch (JsonProcessingException e) {
-            log.warn("Error occurred while processing HubEvent", e);
-        }
-        producer.send(HUBS_TOPIC, EventMapper.toHubEventAvro(event));
+    public EventServiceImpl(Set<SensorEventHandler> sensorEventHandlers, Set<HubEventHandler> hubEventHandlers) {
+        this.sensorEventHandlers = sensorEventHandlers.stream()
+                .collect(Collectors.toMap(
+                        SensorEventHandler::getMessageType,
+                        Function.identity()
+                ));
+        this.hubEventHandlers = hubEventHandlers.stream()
+                .collect(Collectors.toMap(
+                        HubEventHandler::getMessageType,
+                        Function.identity()
+                ));
     }
 
     @Override
-    public void collectSensorEvent(SensorEvent event) {
+    public void collectHubEvent(HubEventProto event) {
         try {
-            log.info("json: {}", objectMapper.writeValueAsString(event));
-        } catch (JsonProcessingException e) {
+            log.info("json: {}", JsonFormat.printer().print(event));
+        } catch (InvalidProtocolBufferException e) {
+            log.warn("Error occurred while processing HubEvent", e);
+        }
+
+        if (hubEventHandlers.containsKey(event.getPayloadCase())) {
+            hubEventHandlers.get(event.getPayloadCase()).handle(event);
+        } else {
+            throw new IllegalArgumentException("HubEventHandler not found for type: "
+                    + event.getPayloadCase());
+        }
+    }
+
+    @Override
+    public void collectSensorEvent(SensorEventProto event) {
+        try {
+            log.info("json: {}", JsonFormat.printer().print(event));
+        } catch (InvalidProtocolBufferException e) {
             log.warn("Error occurred while processing SensorEvent", e);
         }
-        producer.send(SENSORS_TOPIC, EventMapper.toSensorEventAvro(event));
+
+        if (sensorEventHandlers.containsKey(event.getPayloadCase())) {
+            sensorEventHandlers.get(event.getPayloadCase()).handle(event);
+        } else {
+            throw new IllegalArgumentException("SensorEventHandler not found for type: "
+                    + event.getPayloadCase());
+        }
     }
 }
