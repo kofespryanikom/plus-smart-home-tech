@@ -1,53 +1,27 @@
 package ru.practicum.controller;
 
-import com.google.protobuf.Empty;
-import io.grpc.Status;
-import io.grpc.StatusRuntimeException;
-import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
-import net.devh.boot.grpc.server.service.GrpcService;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.model.hub.HubEvent;
+import ru.practicum.model.sensor.SensorEvent;
 import ru.practicum.service.EventService;
-import ru.yandex.practicum.grpc.telemetry.messages.hub.HubEventProto;
-import ru.yandex.practicum.grpc.telemetry.messages.sensor.SensorEventProto;
-import ru.yandex.practicum.grpc.telemetry.service.collector.CollectorControllerGrpc.CollectorControllerImplBase;
 
-@GrpcService
+@RestController
 @RequiredArgsConstructor
-public class EventController extends CollectorControllerImplBase {
+@RequestMapping("/events")
+public class EventController {
     private final EventService eventService;
 
-    @Override
-    public void collectSensorEvent(SensorEventProto event, StreamObserver<Empty> responseObserver) {
-        try {
-            eventService.collectSensorEvent(event);
-
-            responseObserver.onNext(Empty.getDefaultInstance());
-            responseObserver.onCompleted();
-
-        } catch (Exception e) {
-            responseObserver.onError(new StatusRuntimeException(
-                    Status.INTERNAL
-                            .withDescription(e.getLocalizedMessage())
-                            .withCause(e)
-            ));
-        }
+    @PostMapping("/hubs")
+    public void collectHubEvent(@RequestBody HubEvent event) {
+        eventService.collectHubEvent(event);
     }
 
-    @Override
-    public void collectHubEvent(HubEventProto request, StreamObserver<Empty> responseObserver) {
-        try {
-            eventService.collectHubEvent(request);
-
-            responseObserver.onNext(Empty.getDefaultInstance());
-            responseObserver.onCompleted();
-
-        } catch (Exception e) {
-            responseObserver.onError(new StatusRuntimeException(
-                    Status.INTERNAL
-                            .withDescription(e.getLocalizedMessage())
-                            .withCause(e)
-            ));
-        }
+    @PostMapping("/sensors")
+    public void collectSensorEvent(@RequestBody SensorEvent event) {
+        eventService.collectSensorEvent(event);
     }
-
 }
