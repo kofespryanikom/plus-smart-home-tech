@@ -23,6 +23,9 @@ case "$BRANCH" in
   4-analyzer)
     TEST_SCRIPT="$SCRIPTS_PATH/4-analyzer-tests.sh"
     ;;
+  5-config-server)
+      TEST_SCRIPT="$SCRIPTS_PATH/4-analyzer-tests.sh"
+      ;;
   *)
     echo "❌ Неизвестная ветка: '$BRANCH'"
     echo "Этот скрипт поддерживает только ветки:"
