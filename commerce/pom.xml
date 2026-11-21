@@ -16,7 +16,6 @@
         <module>product-service</module>
         <module>order-service</module>
         <module>inventory-service</module>
-        <module>rest-client</module>
         <module>logging</module>
     </modules>
 
