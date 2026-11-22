@@ -33,7 +33,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDto> getAllProducts() {
 
-        return productRepository.findAll().stream()
+        return productRepository.findAllByActive(true).stream()
                 .map(ProductMapper::toDto)
                 .collect(Collectors.toList());
     }
@@ -84,8 +84,8 @@ public class ProductServiceImpl implements ProductService {
                         .getCategoryById(updateProductRequest.categoryId())));
         product.setImageUrl(updateProductRequest.imageUrl() == null
                 ? productDto.imageUrl() : updateProductRequest.imageUrl());
-        product.setActive(updateProductRequest.isActive() == null
-                ? productDto.active() : updateProductRequest.isActive());
+        product.setActive(updateProductRequest.active() == null
+                ? productDto.active() : updateProductRequest.active());
 
         return (ProductMapper.toDto(productRepository.save(product)));
     }

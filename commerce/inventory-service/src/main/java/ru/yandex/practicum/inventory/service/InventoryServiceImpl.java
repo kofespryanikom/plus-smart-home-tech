@@ -63,27 +63,29 @@ public class InventoryServiceImpl implements InventoryService {
     @Transactional
     @Override
     public ReserveResponse reserveInventory(ReserveRequest reserveRequest) {
-        InventoryDto updatedInventoryDto = getInventoryByProductId(reserveRequest.productId());
-        Inventory updatedInventory = InventoryMapper.dtoToEntity(updatedInventoryDto);
+        InventoryDto inventoryToUpdateDto = getInventoryByProductId(reserveRequest.productId());
+        Inventory inventoryToUpdate = InventoryMapper.dtoToEntity(inventoryToUpdateDto);
 
         ReserveResponse inventoryReserveResponse;
 
         try {
-            updatedInventory.setReservedQuantity(reserveRequest.quantity());
-            updatedInventory.setAvailableQuantity(updatedInventory.getAvailableQuantity() -
-                    updatedInventory.getReservedQuantity());
+            inventoryToUpdate.setReservedQuantity(reserveRequest.quantity());
+            inventoryToUpdate.setAvailableQuantity(inventoryToUpdate.getAvailableQuantity() -
+                    inventoryToUpdate.getReservedQuantity());
 
-            if (updatedInventory.getAvailableQuantity() < 0) {
+            if (inventoryToUpdate.getAvailableQuantity() < 0) {
                 log.warn("Reservation exceeds available quantity of product with productId {}",
                         reserveRequest.productId());
                 throw new ConflictException("Reservation exceeds available quantity of product with productId: " +
                         reserveRequest.productId());
             }
 
+            Inventory updatedInventory = inventoryRepository.save(inventoryToUpdate);
+
             inventoryReserveResponse = new ReserveResponse(true, updatedInventory.getAvailableQuantity(),
                     "Inventory with productId " + reserveRequest.productId() + " updated successfully");
         } catch (OptimisticLockException e) {
-            inventoryReserveResponse = new ReserveResponse(false, updatedInventory.getAvailableQuantity(),
+            inventoryReserveResponse = new ReserveResponse(false, inventoryToUpdate.getAvailableQuantity(),
                     "Inventory of product with productId " + reserveRequest.productId() +
                             " was modified by another transaction");
 

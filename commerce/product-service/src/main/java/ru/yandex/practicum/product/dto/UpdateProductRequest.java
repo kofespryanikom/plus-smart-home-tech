@@ -20,6 +20,6 @@ public record UpdateProductRequest(
 
         String imageUrl,
 
-        Boolean isActive
+        Boolean active
 ) {
 }
