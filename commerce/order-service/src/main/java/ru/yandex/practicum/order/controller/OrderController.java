@@ -1,8 +1,11 @@
 package ru.yandex.practicum.order.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.order.dto.CreateOrderRequest;
 import ru.yandex.practicum.order.dto.OrderDto;
@@ -13,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/orders")
 @RequiredArgsConstructor
+@Validated
 public class OrderController {
     private final OrderService orderService;
 
@@ -28,12 +32,14 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public OrderDto getOrderById(@PathVariable Long id) {
+    public OrderDto getOrderById(@PathVariable @Positive(message = "Order ID must be a positive number") Long id) {
         return orderService.getOrderById(id);
     }
 
     @GetMapping("/by-email")
-    public List<OrderDto> getOrdersByEmail(@RequestParam String email) {
+    public List<OrderDto> getOrdersByEmail(@RequestParam
+                                           @Email(message = "Email should be email-like format")
+                                           String email) {
         return orderService.getOrdersByEmail(email);
     }
 }

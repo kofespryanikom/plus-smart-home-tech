@@ -1,18 +1,20 @@
 package ru.yandex.practicum.inventory.service;
 
-import jakarta.validation.constraints.Positive;
-import ru.yandex.practicum.inventory.dto.*;
+import ru.yandex.practicum.inventory.dto.InventoryItemDto;
+import ru.yandex.practicum.inventory.dto.InventoryItemRequest;
+import ru.yandex.practicum.inventory.dto.ReserveRequest;
+import ru.yandex.practicum.inventory.dto.ReserveResponse;
 
 import java.util.List;
 
 public interface InventoryService {
-    List<InventoryDto> getAllInventory();
+    List<InventoryItemDto> getAllInventory();
 
-    InventoryDto updateInventory(UpdateInventoryRequest updateInventoryRequest);
+    InventoryItemDto updateInventoryItem(InventoryItemRequest inventoryItemRequest);
 
-    InventoryDto createInventory(CreateInventoryRequest createInventoryRequest);
+    InventoryItemDto createInventoryItem(InventoryItemRequest inventoryItemRequest);
 
-    ReserveResponse reserveInventory(ReserveRequest reserveRequest);
+    ReserveResponse reserveInventoryItem(ReserveRequest reserveRequest);
 
-    InventoryDto getInventoryByProductId(@Positive(message = "Inventory id must be positive") Long productId);
+    InventoryItemDto getInventoryItemByProductId(Long productId);
 }

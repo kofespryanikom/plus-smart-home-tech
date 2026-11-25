@@ -10,10 +10,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Inventory {
+public class InventoryItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(unique = true, nullable = false)
     private Long productId;
     private Integer quantity;
     private Integer reservedQuantity;
@@ -22,7 +24,7 @@ public class Inventory {
     @Version
     private Long version;
 
-    public Inventory(Long id, Long productId, Integer quantity, Integer reservedQuantity, Integer availableQuantity) {
+    public InventoryItem(Long id, Long productId, Integer quantity, Integer reservedQuantity, Integer availableQuantity) {
         this.id = id;
         this.productId = productId;
         this.quantity = quantity;

@@ -1,6 +1,6 @@
 package ru.yandex.practicum.inventory.dto;
 
-public record InventoryDto(
+public record InventoryItemDto(
 
         Long id,
 

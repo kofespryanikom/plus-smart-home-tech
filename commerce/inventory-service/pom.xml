@@ -10,7 +10,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>inventory-service</artifactId>
+    <artifactId>inventoryItem-service</artifactId>
     <name>Inventory Service</name>
     <description>Сервис управления складскими остатками</description>
 

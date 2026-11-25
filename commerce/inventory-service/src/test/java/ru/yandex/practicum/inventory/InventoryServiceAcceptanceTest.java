@@ -9,8 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import ru.yandex.practicum.inventory.dto.InventoryItemRequest;
 import ru.yandex.practicum.inventory.dto.ReserveRequest;
-import ru.yandex.practicum.inventory.dto.UpdateInventoryRequest;
 
 import java.util.Map;
 
@@ -34,7 +34,7 @@ class InventoryServiceAcceptanceTest {
     void shouldCreateUpdateReadAndReserveInventoryRecord() throws Exception {
         long productId = 100_001L;
 
-        MvcResult createResponse = postJson("/api/inventory", new UpdateInventoryRequest(productId, 10));
+        MvcResult createResponse = postJson("/api/inventory", new InventoryItemRequest(productId, 10));
 
         assertThat(status(createResponse))
                 .as("POST /api/inventory должен создавать складскую запись и возвращать HTTP 201 Created")
@@ -55,7 +55,7 @@ class InventoryServiceAcceptanceTest {
 
         MvcResult updateResponse = mvc.perform(put("/api/inventory")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(json.writeValueAsString(new UpdateInventoryRequest(productId, 15))))
+                        .content(json.writeValueAsString(new InventoryItemRequest(productId, 15))))
                 .andReturn();
 
         assertThat(status(updateResponse))
@@ -92,7 +92,7 @@ class InventoryServiceAcceptanceTest {
     @Test
     void shouldReturnConflictWhenReservationExceedsAvailableQuantity() throws Exception {
         long productId = 100_002L;
-        postJson("/api/inventory", new UpdateInventoryRequest(productId, 2));
+        postJson("/api/inventory", new InventoryItemRequest(productId, 2));
 
         MvcResult response = postJson("/api/inventory/reserve", new ReserveRequest(productId, 3));
 
@@ -106,7 +106,7 @@ class InventoryServiceAcceptanceTest {
 
     @Test
     void shouldReturnBadRequestForInvalidInventoryPayload() throws Exception {
-        MvcResult response = postJson("/api/inventory", new UpdateInventoryRequest(null, -1));
+        MvcResult response = postJson("/api/inventory", new InventoryItemRequest(null, -1));
 
         assertThat(status(response))
                 .as("POST /api/inventory с невалидным телом запроса должен возвращать HTTP 400 Bad Request")

@@ -1,12 +1,9 @@
 package ru.yandex.practicum.product.service.product;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 import ru.yandex.practicum.logging.annotation.Loggable;
 import ru.yandex.practicum.product.dto.CreateProductRequest;
 import ru.yandex.practicum.product.dto.ProductDto;
@@ -23,7 +20,6 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Validated
 @Slf4j
 @Transactional(readOnly = true)
 public class ProductServiceImpl implements ProductService {
@@ -56,7 +52,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto getProductById(@Positive(message = "Product ID must be a positive number") Long id) {
+    public ProductDto getProductById(Long id) {
         Product productFound = productRepository.findById(id)
                 .orElseGet(() -> {
                     log.warn("Product not found with id: {}", id);
@@ -68,7 +64,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
-    public ProductDto patchProduct(@Positive(message = "Product ID must be a positive number") Long id,
+    public ProductDto patchProduct(Long id,
                                    UpdateProductRequest updateProductRequest) {
         ProductDto productDto = getProductById(id);
 
@@ -91,7 +87,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> searchProducts(@NotNull(message = "Query cannot be null") String query) {
+    public List<ProductDto> searchProducts(String query) {
         return productRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(query, query).stream()
                 .map(ProductMapper::toDto)
                 .collect(Collectors.toList());
@@ -99,7 +95,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> getProductsByCategory(
-            @Positive(message = "Category ID must be a positive number") Long categoryId) {
+            Long categoryId) {
         categoryService.getCategoryById(categoryId);
 
         return productRepository.findByCategoryId(categoryId).stream()

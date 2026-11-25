@@ -3,7 +3,8 @@ package ru.yandex.practicum.inventory.dto;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
-public record CreateInventoryRequest(
+public record InventoryItemRequest(
+
         @NotNull(message = "ID товара обязателен")
         Long productId,
 
