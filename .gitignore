@@ -1,3 +1,10 @@
+### rest-client ###
+/commerce/rest-client/
+/infra/config-repo/commerce/rest-client.yaml
+
+### web-ui source files ###
+/commerce/web-ui/web-ui/
+
 ### IntelliJ IDEA ###
 .idea/
 **/.idea/
