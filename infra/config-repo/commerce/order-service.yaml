@@ -1,5 +1,5 @@
 server:
-  port: 52723
+  port: 0
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/order_db
